@@ -208,7 +208,7 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
   move = false
 
   # Win: If you have two in a row, play the third to get three in a row.
-  puts "Trying 1"
+  # puts "Trying 1"
   move = are_there_two_computer_tokens_in_a_row(ctoken, spaces) unless skip_rule == 0
   if move
     spaces = add_move_to_spaces(move, ctoken, spaces)
@@ -216,7 +216,7 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
   end
 
   # Block: If the opponent has two in a row, play the third to block them.
-  puts "Trying 2"
+  # puts "Trying 2"
   move = block_player_now_dammit(ptoken, spaces) unless skip_rule == 1
   if move
     spaces = add_move_to_spaces(move, ctoken, spaces)
@@ -224,7 +224,7 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
   end
 
   # Fork: Create an opportunity where you can win in two ways.
-  puts "Trying 3"
+  # puts "Trying 3"
   move = discover_fork(ctoken, spaces) unless skip_rule == 2
   if move
     spaces = add_move_to_spaces(move, ctoken, spaces)
@@ -235,7 +235,7 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
   # can fork, block that fork.
   # It appears I can simply use discover_fork again, changing only ctoken
   # to ptoken!
-  puts "Trying 4"
+  # puts "Trying 4"
   move = discover_fork(ptoken, spaces) unless skip_rule == 3
   if move
     spaces = add_move_to_spaces(move, ctoken, spaces)
@@ -243,14 +243,14 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
   end
 
   # Center: Play the center.
-  puts "Trying 5"
+  # puts "Trying 5"
   if spaces[4] == " " # i.e., if the center is open, and you've made it this far
     spaces = add_move_to_spaces(4, ctoken, spaces) unless skip_rule == 4
     return spaces
   end
 
   # Opposite Corner: If the opponent is in the corner, play the opposite corner.
-  puts "Trying 6"
+  # puts "Trying 6"
   if move
     move = try_opposite_corner(ptoken, spaces) unless skip_rule == 5
     spaces = add_move_to_spaces(move, ctoken, spaces)
@@ -258,7 +258,7 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
   end
 
   # Empty Corner: Play an empty corner.
-  puts "Trying 7"
+  # puts "Trying 7"
   move = try_empty_corner(spaces)
   if move
     spaces = add_move_to_spaces(move, ctoken, spaces)
@@ -266,7 +266,7 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
   end
 
   # Empty Side: Play an empty side.
-  puts "Trying 8"
+  # puts "Trying 8"
   move = play_empty_side(spaces)
   if move
     spaces = add_move_to_spaces(move, ctoken, spaces)
