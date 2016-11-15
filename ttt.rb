@@ -1,16 +1,23 @@
+require 'colorize'
 game_on = true
 player_score = 0
 computer_score = 0
 draw_games = 0
 
 def draw_board(spaces)
-  puts " ┏━━━┳━━━┳━━━┓"
-  puts " ┃ #{spaces[0]} ┃ #{spaces[1]} ┃ #{spaces[2]} ┃"
-  puts " ┣━━━╋━━━╋━━━┫"
-  puts " ┃ #{spaces[3]} ┃ #{spaces[4]} ┃ #{spaces[5]} ┃"
-  puts " ┣━━━╋━━━╋━━━┫"
-  puts " ┃ #{spaces[6]} ┃ #{spaces[7]} ┃ #{spaces[8]} ┃"
-  puts " ┗━━━┻━━━┻━━━┛"
+  puts " ┏━━━━━━━┳━━━━━━━┳━━━━━━━┓"
+  puts " ┃       ┃       ┃       ┃"
+  puts " ┃   #{spaces[0] == " " ? "1".red : spaces[0]}   ┃   #{spaces[1] == " " ? "2".red : spaces[1]}   ┃   #{spaces[2] == " " ? "3".red : spaces[2]}   ┃"
+  puts " ┃       ┃       ┃       ┃"
+  puts " ┣━━━━━━━╋━━━━━━━╋━━━━━━━┫"
+  puts " ┃       ┃       ┃       ┃"
+  puts " ┃   #{spaces[3] == " " ? "4".red : spaces[3]}   ┃   #{spaces[4] == " " ? "5".red : spaces[4]}   ┃   #{spaces[5] == " " ? "6".red : spaces[5]}   ┃"
+  puts " ┃       ┃       ┃       ┃"
+  puts " ┣━━━━━━━╋━━━━━━━╋━━━━━━━┫"
+  puts " ┃       ┃       ┃       ┃"
+  puts " ┃   #{spaces[6] == " " ? "7".red : spaces[6]}   ┃   #{spaces[7] == " " ? "8".red : spaces[7]}   ┃   #{spaces[8] == " " ? "9".red : spaces[8]}   ┃"
+  puts " ┃       ┃       ┃       ┃"
+  puts " ┗━━━━━━━┻━━━━━━━┻━━━━━━━┛"
 end
 
 def are_there_two_computer_tokens_in_a_row(ctoken, spaces)
@@ -171,7 +178,13 @@ def discover_fork(ctoken, spaces)
     spaces[space] = " "
     avail << space if fork_me > 1 # add this space to array of fork-creating spaces
   end
-  return avail.sample if ! avail.empty?
+  if ! avail.empty? # do this if there ARE available fork-creating spaces
+    puts "avail = #{avail}"
+    corners = avail.select {|x| [0, 2, 6, 8].include?(x)}
+    puts "corners = #{corners}" if ! corners.empty?
+    return corners.sample if ! corners.empty? # gimme any corner blocker first
+    return avail.sample # then other kinds of blockers
+  end
   return false # if no forks were found
 end
 
@@ -299,17 +312,10 @@ def player_moves(ptoken, spaces)
   valid_answer = nil
   answer = ""
   until valid_answer do
-    print "Enter 1-9 to mark an #{ptoken}: "
+    print "Place an #{ptoken}: "
     answer = gets.chomp.to_i
     if ! (1..9).to_a.include?(answer)
       puts "Please choose a number, 1 through 9:"
-      puts " ┏━━━┳━━━┳━━━┓"
-      puts " ┃ 1 ┃ 2 ┃ 3 ┃"
-      puts " ┣━━━╋━━━╋━━━┫"
-      puts " ┃ 4 ┃ 5 ┃ 6 ┃"
-      puts " ┣━━━╋━━━╋━━━┫"
-      puts " ┃ 7 ┃ 8 ┃ 9 ┃"
-      puts " ┗━━━┻━━━┻━━━┛"
       next
     end
     # Prepare list of acceptable spaces
@@ -346,7 +352,8 @@ system("cls")
 
 # Enclosing loop (multiple games)
 while game_on
-  puts "\n\nStarting a new game of Tic-Tac-Toe!"
+  system("cls")
+  puts "Starting a new game of Tic-Tac-Toe!"
   winnable ||= nil
   unless winnable # don't check winnability every time
     print "Do you want the game to be winnable? (y/n) "
@@ -364,7 +371,7 @@ while game_on
 
   # See who goes first and announce
   who_goes_first = (rand > 0.5) # outputs random "true" or "false"
-  draw_board(spaces)
+  draw_board(spaces) if who_goes_first == false
   puts (who_goes_first == true ? "Computer" : "Player") + " goes first."
   whose_move = who_goes_first # computer moves (and moves first) when true
   # Determine if computer and player are X and O, or O and X
