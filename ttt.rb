@@ -16,38 +16,41 @@ end
 def are_there_two_computer_tokens_in_a_row(ctoken, spaces)
   # puts "ctoken = #{ctoken}" # FOR TESTING
   # p spaces # FOR TESTING
+  groovy = []
   # first row
-  return 2 if spaces[0] == ctoken && spaces[1] == ctoken && spaces[2] == " "
-  return 1 if spaces[0] == ctoken && spaces[2] == ctoken && spaces[1] == " "
-  return 0 if spaces[1] == ctoken && spaces[2] == ctoken && spaces[0] == " "
+  groovy << 2 if spaces[0] == ctoken && spaces[1] == ctoken && spaces[2] == " "
+  groovy << 1 if spaces[0] == ctoken && spaces[2] == ctoken && spaces[1] == " "
+  groovy << 0 if spaces[1] == ctoken && spaces[2] == ctoken && spaces[0] == " "
   # second row
-  return 5 if spaces[3] == ctoken && spaces[4] == ctoken && spaces[5] == " "
-  return 4 if spaces[3] == ctoken && spaces[5] == ctoken && spaces[4] == " "
-  return 3 if spaces[4] == ctoken && spaces[5] == ctoken && spaces[3] == " "
+  groovy << 5 if spaces[3] == ctoken && spaces[4] == ctoken && spaces[5] == " "
+  groovy << 4 if spaces[3] == ctoken && spaces[5] == ctoken && spaces[4] == " "
+  groovy << 3 if spaces[4] == ctoken && spaces[5] == ctoken && spaces[3] == " "
   # third row
-  return 8 if spaces[6] == ctoken && spaces[7] == ctoken && spaces[8] == " "
-  return 7 if spaces[6] == ctoken && spaces[8] == ctoken && spaces[7] == " "
-  return 6 if spaces[7] == ctoken && spaces[8] == ctoken && spaces[6] == " "
+  groovy << 8 if spaces[6] == ctoken && spaces[7] == ctoken && spaces[8] == " "
+  groovy << 7 if spaces[6] == ctoken && spaces[8] == ctoken && spaces[7] == " "
+  groovy << 6 if spaces[7] == ctoken && spaces[8] == ctoken && spaces[6] == " "
   # NW to SE diagonal
-  return 0 if spaces[4] == ctoken && spaces[8] == ctoken && spaces[0] == " "
-  return 4 if spaces[0] == ctoken && spaces[8] == ctoken && spaces[4] == " "
-  return 8 if spaces[0] == ctoken && spaces[4] == ctoken && spaces[8] == " "
+  groovy << 0 if spaces[4] == ctoken && spaces[8] == ctoken && spaces[0] == " "
+  groovy << 4 if spaces[0] == ctoken && spaces[8] == ctoken && spaces[4] == " "
+  groovy << 8 if spaces[0] == ctoken && spaces[4] == ctoken && spaces[8] == " "
   # SW to NE diagonal
-  return 6 if spaces[2] == ctoken && spaces[4] == ctoken && spaces[6] == " "
-  return 4 if spaces[2] == ctoken && spaces[6] == ctoken && spaces[4] == " "
-  return 2 if spaces[4] == ctoken && spaces[6] == ctoken && spaces[2] == " "
+  groovy << 6 if spaces[2] == ctoken && spaces[4] == ctoken && spaces[6] == " "
+  groovy << 4 if spaces[2] == ctoken && spaces[6] == ctoken && spaces[4] == " "
+  groovy << 2 if spaces[4] == ctoken && spaces[6] == ctoken && spaces[2] == " "
   # first column
-  return 0 if spaces[3] == ctoken && spaces[6] == ctoken && spaces[0] == " "
-  return 3 if spaces[0] == ctoken && spaces[6] == ctoken && spaces[3] == " "
-  return 6 if spaces[0] == ctoken && spaces[3] == ctoken && spaces[6] == " "
+  groovy << 0 if spaces[3] == ctoken && spaces[6] == ctoken && spaces[0] == " "
+  groovy << 3 if spaces[0] == ctoken && spaces[6] == ctoken && spaces[3] == " "
+  groovy << 6 if spaces[0] == ctoken && spaces[3] == ctoken && spaces[6] == " "
   # second column
-  return 1 if spaces[4] == ctoken && spaces[7] == ctoken && spaces[1] == " "
-  return 4 if spaces[1] == ctoken && spaces[7] == ctoken && spaces[4] == " "
-  return 7 if spaces[1] == ctoken && spaces[4] == ctoken && spaces[7] == " "
+  groovy << 1 if spaces[4] == ctoken && spaces[7] == ctoken && spaces[1] == " "
+  groovy << 4 if spaces[1] == ctoken && spaces[7] == ctoken && spaces[4] == " "
+  groovy << 7 if spaces[1] == ctoken && spaces[4] == ctoken && spaces[7] == " "
   # third column
-  return 2 if spaces[5] == ctoken && spaces[8] == ctoken && spaces[2] == " "
-  return 5 if spaces[2] == ctoken && spaces[8] == ctoken && spaces[5] == " "
-  return 8 if spaces[2] == ctoken && spaces[5] == ctoken && spaces[8] == " "
+  groovy << 2 if spaces[5] == ctoken && spaces[8] == ctoken && spaces[2] == " "
+  groovy << 5 if spaces[2] == ctoken && spaces[8] == ctoken && spaces[5] == " "
+  groovy << 8 if spaces[2] == ctoken && spaces[5] == ctoken && spaces[8] == " "
+  # choose randomly from among winning moves
+  return groovy.sample if ! groovy.empty?
   # if no conditions are met, return false
   false
 end
@@ -61,38 +64,41 @@ def add_move_to_spaces(move, ctoken, spaces)
 end
 
 def block_player_now_dammit(ptoken, spaces)
+  blockworthy = []
   # first row
-  return 2 if spaces[0] == ptoken && spaces[1] == ptoken && spaces[2] == " "
-  return 1 if spaces[0] == ptoken && spaces[2] == ptoken && spaces[1] == " "
-  return 0 if spaces[1] == ptoken && spaces[2] == ptoken && spaces[0] == " "
+  blockworthy << 2 if spaces[0] == ptoken && spaces[1] == ptoken && spaces[2] == " "
+  blockworthy << 1 if spaces[0] == ptoken && spaces[2] == ptoken && spaces[1] == " "
+  blockworthy << 0 if spaces[1] == ptoken && spaces[2] == ptoken && spaces[0] == " "
   # second row
-  return 5 if spaces[3] == ptoken && spaces[4] == ptoken && spaces[5] == " "
-  return 4 if spaces[3] == ptoken && spaces[5] == ptoken && spaces[4] == " "
-  return 3 if spaces[4] == ptoken && spaces[5] == ptoken && spaces[3] == " "
+  blockworthy << 5 if spaces[3] == ptoken && spaces[4] == ptoken && spaces[5] == " "
+  blockworthy << 4 if spaces[3] == ptoken && spaces[5] == ptoken && spaces[4] == " "
+  blockworthy << 3 if spaces[4] == ptoken && spaces[5] == ptoken && spaces[3] == " "
   # third row
-  return 8 if spaces[6] == ptoken && spaces[7] == ptoken && spaces[8] == " "
-  return 7 if spaces[6] == ptoken && spaces[8] == ptoken && spaces[7] == " "
-  return 6 if spaces[7] == ptoken && spaces[8] == ptoken && spaces[6] == " "
+  blockworthy << 8 if spaces[6] == ptoken && spaces[7] == ptoken && spaces[8] == " "
+  blockworthy << 7 if spaces[6] == ptoken && spaces[8] == ptoken && spaces[7] == " "
+  blockworthy << 6 if spaces[7] == ptoken && spaces[8] == ptoken && spaces[6] == " "
   # NW to SE diagonal
-  return 0 if spaces[4] == ptoken && spaces[8] == ptoken && spaces[0] == " "
-  return 4 if spaces[0] == ptoken && spaces[8] == ptoken && spaces[4] == " "
-  return 8 if spaces[0] == ptoken && spaces[4] == ptoken && spaces[8] == " "
+  blockworthy << 0 if spaces[4] == ptoken && spaces[8] == ptoken && spaces[0] == " "
+  blockworthy << 4 if spaces[0] == ptoken && spaces[8] == ptoken && spaces[4] == " "
+  blockworthy << 8 if spaces[0] == ptoken && spaces[4] == ptoken && spaces[8] == " "
   # SW to NE diagonal
-  return 6 if spaces[2] == ptoken && spaces[4] == ptoken && spaces[6] == " "
-  return 4 if spaces[2] == ptoken && spaces[6] == ptoken && spaces[4] == " "
-  return 2 if spaces[4] == ptoken && spaces[6] == ptoken && spaces[2] == " "
+  blockworthy << 6 if spaces[2] == ptoken && spaces[4] == ptoken && spaces[6] == " "
+  blockworthy << 4 if spaces[2] == ptoken && spaces[6] == ptoken && spaces[4] == " "
+  blockworthy << 2 if spaces[4] == ptoken && spaces[6] == ptoken && spaces[2] == " "
   # first column
-  return 0 if spaces[3] == ptoken && spaces[6] == ptoken && spaces[0] == " "
-  return 3 if spaces[0] == ptoken && spaces[6] == ptoken && spaces[3] == " "
-  return 6 if spaces[0] == ptoken && spaces[3] == ptoken && spaces[6] == " "
+  blockworthy << 0 if spaces[3] == ptoken && spaces[6] == ptoken && spaces[0] == " "
+  blockworthy << 3 if spaces[0] == ptoken && spaces[6] == ptoken && spaces[3] == " "
+  blockworthy << 6 if spaces[0] == ptoken && spaces[3] == ptoken && spaces[6] == " "
   # second column
-  return 1 if spaces[4] == ptoken && spaces[7] == ptoken && spaces[1] == " "
-  return 4 if spaces[1] == ptoken && spaces[7] == ptoken && spaces[4] == " "
-  return 7 if spaces[1] == ptoken && spaces[4] == ptoken && spaces[7] == " "
+  blockworthy << 1 if spaces[4] == ptoken && spaces[7] == ptoken && spaces[1] == " "
+  blockworthy << 4 if spaces[1] == ptoken && spaces[7] == ptoken && spaces[4] == " "
+  blockworthy << 7 if spaces[1] == ptoken && spaces[4] == ptoken && spaces[7] == " "
   # third column
-  return 2 if spaces[5] == ptoken && spaces[8] == ptoken && spaces[2] == " "
-  return 5 if spaces[2] == ptoken && spaces[8] == ptoken && spaces[5] == " "
-  return 8 if spaces[2] == ptoken && spaces[5] == ptoken && spaces[8] == " "
+  blockworthy << 2 if spaces[5] == ptoken && spaces[8] == ptoken && spaces[2] == " "
+  blockworthy << 5 if spaces[2] == ptoken && spaces[8] == ptoken && spaces[5] == " "
+  blockworthy << 8 if spaces[2] == ptoken && spaces[5] == ptoken && spaces[8] == " "
+  # choose randomly from among available blocks
+  return blockworthy.sample if ! blockworthy.empty?
   # if no conditions are met, return false
   false
 end
@@ -156,42 +162,50 @@ def discover_fork(ctoken, spaces)
   # Cycle through open_spaces; temporarily add a token to spaces;
   # then determine if there are two instances of two computer tokens
   # in a row.
+  avail = [] # array of fork-creating spaces, to maximize randomness of play
   open_spaces.each do |space|
     # assigns computer token to this empty space
     spaces[space] = ctoken
     # check if spaces now contains a fork!
     fork_me = does_a_fork_now_exist(ctoken, spaces)
     spaces[space] = " "
-    return space if fork_me > 1
+    avail << space if fork_me > 1 # add this space to array of fork-creating spaces
   end
+  return avail.sample if ! avail.empty?
   return false # if no forks were found
 end
 
 # Check to see if player has chosen a corner that has an open opposite.
 def try_opposite_corner(ptoken, spaces)
   # Check for player corner moves; then check if opposite is open; return if so
-    return 8 if spaces[0] == ptoken && spaces[8] == " "
-    return 0 if spaces[8] == ptoken && spaces[0] == " "
-    return 2 if spaces[6] == ptoken && spaces[2] == " "
-    return 6 if spaces[2] == ptoken && spaces[6] == " "
-    return false # if you can't jump on an opposite corner
+  avail = []
+  avail << 8 if spaces[0] == ptoken && spaces[8] == " "
+  avail << 0 if spaces[8] == ptoken && spaces[0] == " "
+  avail << 2 if spaces[6] == ptoken && spaces[2] == " "
+  avail << 6 if spaces[2] == ptoken && spaces[6] == " "
+  return avail.sample if ! avail.empty?
+  return false # if you can't jump on an opposite corner
 end
 
 # Simply occupy any empty corner
 def try_empty_corner(spaces)
-  return 0 if spaces[0] == " "
-  return 2 if spaces[2] == " "
-  return 6 if spaces[6] == " "
-  return 8 if spaces[8] == " "
+  avail = [] # create array of empty corners
+  avail << 0 if spaces[0] == " "
+  avail << 2 if spaces[2] == " "
+  avail << 6 if spaces[6] == " "
+  avail << 8 if spaces[8] == " "
+  return avail.sample if ! avail.empty? # sample the empty corner array
   return false # if all corners are occupied
 end
 
 # Simply occupy any empty side
 def play_empty_side(spaces)
-  return 1 if spaces[1] == " "
-  return 3 if spaces[3] == " "
-  return 5 if spaces[5] == " "
-  return 7 if spaces[7] == " "
+  avail = []
+  avail << 1 if spaces[1] == " "
+  avail << 3 if spaces[3] == " "
+  avail << 5 if spaces[5] == " "
+  avail << 7 if spaces[7] == " "
+  return avail.sample if ! avail.empty?
   return false # if all sides are occupied
 end
 
@@ -201,7 +215,7 @@ end
 def computer_moves(winnable, ptoken, ctoken, spaces)
   skip_rule = ""
   if winnable == 'y'
-    skip_rule = rand(6) # randomly chooses a rule to "forget"
+    skip_rule = [0, 1, 2, 3, 5].sample # randomly chooses a rule to "forget"
   end
   puts "Computer's move."
   # Test each set of conditions; until a move is found
@@ -244,8 +258,10 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
 
   # Center: Play the center.
   # puts "Trying 5"
+  # Note, no "unless skip_rule == 4" here. This is because if it's the opening
+  # move, and this rule is skipped, then the computer won't play anything.
   if spaces[4] == " " # i.e., if the center is open, and you've made it this far
-    spaces = add_move_to_spaces(4, ctoken, spaces) unless skip_rule == 4
+    spaces = add_move_to_spaces(4, ctoken, spaces)
     return spaces
   end
 
