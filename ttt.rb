@@ -367,6 +367,7 @@ while game_on
   player_wins = nil # true if player wins; false if computer wins
   # Start game by creating spaces
   spaces = Array.new(9, " ")
+  
 
   # See who goes first and announce
   who_goes_first = (rand > 0.5) # outputs random "true" or "false"
