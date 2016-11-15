@@ -23,7 +23,7 @@ end
 def are_there_two_computer_tokens_in_a_row(ctoken, spaces)
   # puts "ctoken = #{ctoken}" # FOR TESTING
   # p spaces # FOR TESTING
-  groovy = []
+  groovy = [] # array of winning moves
   # first row
   groovy << 2 if spaces[0] == ctoken && spaces[1] == ctoken && spaces[2] == " "
   groovy << 1 if spaces[0] == ctoken && spaces[2] == ctoken && spaces[1] == " "
@@ -179,9 +179,7 @@ def discover_fork(ctoken, spaces)
     avail << space if fork_me > 1 # add this space to array of fork-creating spaces
   end
   if ! avail.empty? # do this if there ARE available fork-creating spaces
-    puts "avail = #{avail}"
     corners = avail.select {|x| [0, 2, 6, 8].include?(x)}
-    puts "corners = #{corners}" if ! corners.empty?
     return corners.sample if ! corners.empty? # gimme any corner blocker first
     return avail.sample # then other kinds of blockers
   end
@@ -230,6 +228,7 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
   if winnable == 'y'
     skip_rule = [0, 1, 2, 3, 5].sample # randomly chooses a rule to "forget"
   end
+  system("cls")
   puts "Computer's move."
   # Test each set of conditions; until a move is found
   move = false
