@@ -4,6 +4,19 @@ player_score = 0
 computer_score = 0
 draw_games = 0
 
+def create_board(spaces)
+    board = {
+      row1: {0 => spaces[0], 1 => spaces[1], 2 => spaces[2]}, # hash of three row spaces
+      row2: {3 => spaces[3], 4 => spaces[4], 5 => spaces[5]},
+      row3: {6 => spaces[6], 7 => spaces[7], 8 => spaces[8]},
+      col1: {0 => spaces[0], 3 => spaces[3], 6 => spaces[6]}, # hash of three column spaces
+      col2: {1 => spaces[1], 4 => spaces[4], 7 => spaces[7]},
+      col3: {2 => spaces[2], 5 => spaces[5], 8 => spaces[8]},
+      diag1: {0 => spaces[0], 4 => spaces[4], 8 => spaces[8]}, # hash of nw-se diagonal spaces
+      diag2: {2 => spaces[2], 4 => spaces[4], 6 => spaces[6]}    }
+    return board
+end
+
 def draw_board(spaces)
   puts " ┏━━━━━━━┳━━━━━━━┳━━━━━━━┓"
   puts " ┃       ┃       ┃       ┃"
@@ -20,133 +33,40 @@ def draw_board(spaces)
   puts " ┗━━━━━━━┻━━━━━━━┻━━━━━━━┛"
 end
 
-def are_there_two_computer_tokens_in_a_row(ctoken, spaces)
-  # puts "ctoken = #{ctoken}" # FOR TESTING
-  # p spaces # FOR TESTING
+def are_there_two_computer_tokens_in_a_row(ctoken, spaces, board)
   groovy = [] # array of winning moves
-  # first row
-  groovy << 2 if spaces[0] == ctoken && spaces[1] == ctoken && spaces[2] == " "
-  groovy << 1 if spaces[0] == ctoken && spaces[2] == ctoken && spaces[1] == " "
-  groovy << 0 if spaces[1] == ctoken && spaces[2] == ctoken && spaces[0] == " "
-  # second row
-  groovy << 5 if spaces[3] == ctoken && spaces[4] == ctoken && spaces[5] == " "
-  groovy << 4 if spaces[3] == ctoken && spaces[5] == ctoken && spaces[4] == " "
-  groovy << 3 if spaces[4] == ctoken && spaces[5] == ctoken && spaces[3] == " "
-  # third row
-  groovy << 8 if spaces[6] == ctoken && spaces[7] == ctoken && spaces[8] == " "
-  groovy << 7 if spaces[6] == ctoken && spaces[8] == ctoken && spaces[7] == " "
-  groovy << 6 if spaces[7] == ctoken && spaces[8] == ctoken && spaces[6] == " "
-  # NW to SE diagonal
-  groovy << 0 if spaces[4] == ctoken && spaces[8] == ctoken && spaces[0] == " "
-  groovy << 4 if spaces[0] == ctoken && spaces[8] == ctoken && spaces[4] == " "
-  groovy << 8 if spaces[0] == ctoken && spaces[4] == ctoken && spaces[8] == " "
-  # SW to NE diagonal
-  groovy << 6 if spaces[2] == ctoken && spaces[4] == ctoken && spaces[6] == " "
-  groovy << 4 if spaces[2] == ctoken && spaces[6] == ctoken && spaces[4] == " "
-  groovy << 2 if spaces[4] == ctoken && spaces[6] == ctoken && spaces[2] == " "
-  # first column
-  groovy << 0 if spaces[3] == ctoken && spaces[6] == ctoken && spaces[0] == " "
-  groovy << 3 if spaces[0] == ctoken && spaces[6] == ctoken && spaces[3] == " "
-  groovy << 6 if spaces[0] == ctoken && spaces[3] == ctoken && spaces[6] == " "
-  # second column
-  groovy << 1 if spaces[4] == ctoken && spaces[7] == ctoken && spaces[1] == " "
-  groovy << 4 if spaces[1] == ctoken && spaces[7] == ctoken && spaces[4] == " "
-  groovy << 7 if spaces[1] == ctoken && spaces[4] == ctoken && spaces[7] == " "
-  # third column
-  groovy << 2 if spaces[5] == ctoken && spaces[8] == ctoken && spaces[2] == " "
-  groovy << 5 if spaces[2] == ctoken && spaces[8] == ctoken && spaces[5] == " "
-  groovy << 8 if spaces[2] == ctoken && spaces[5] == ctoken && spaces[8] == " "
-  # choose randomly from among winning moves
-  return groovy.sample if ! groovy.empty?
+  # Strategy: since there is already a hash of all triads, simply process
+  # the hash; for each triad, test if it contains two ctokens and one " ".
+  # If so, return the # for that space.
+  board.each do |triad, thash|
+    ctokens_spotted = 0 # count the ctokens
+    empty_spotted = false # look for an empty spot
+    empty = nil # any empty space
+    thash.each do |spacenum, content|
+      ctokens_spotted += 1 if content == ctoken
+      if content == " "
+        empty_spotted = true
+        empty = spacenum
+      end
+      # The essential logic: if you spot an empty space in a triad, along with
+      # two computer tokens, then add the empty space to the array of groovies!
+      if empty_spotted == true && ctokens_spotted == 2
+        groovy << empty
+      end
+    end
+  end # of examination of board
+  return groovy.sample, groovy.length if ! groovy.empty?
   # if no conditions are met, return false
   false
 end
 
-def add_move_to_spaces(move, ctoken, spaces)
+def add_move_to_spaces(move, ctoken, spaces, board)
   unless spaces[move] == " "
     raise "Caught exception: trying to overwrite existing move. Fix bug!"
   end
   spaces[move] = ctoken
-  return spaces
-end
-
-def block_player_now_dammit(ptoken, spaces)
-  blockworthy = []
-  # first row
-  blockworthy << 2 if spaces[0] == ptoken && spaces[1] == ptoken && spaces[2] == " "
-  blockworthy << 1 if spaces[0] == ptoken && spaces[2] == ptoken && spaces[1] == " "
-  blockworthy << 0 if spaces[1] == ptoken && spaces[2] == ptoken && spaces[0] == " "
-  # second row
-  blockworthy << 5 if spaces[3] == ptoken && spaces[4] == ptoken && spaces[5] == " "
-  blockworthy << 4 if spaces[3] == ptoken && spaces[5] == ptoken && spaces[4] == " "
-  blockworthy << 3 if spaces[4] == ptoken && spaces[5] == ptoken && spaces[3] == " "
-  # third row
-  blockworthy << 8 if spaces[6] == ptoken && spaces[7] == ptoken && spaces[8] == " "
-  blockworthy << 7 if spaces[6] == ptoken && spaces[8] == ptoken && spaces[7] == " "
-  blockworthy << 6 if spaces[7] == ptoken && spaces[8] == ptoken && spaces[6] == " "
-  # NW to SE diagonal
-  blockworthy << 0 if spaces[4] == ptoken && spaces[8] == ptoken && spaces[0] == " "
-  blockworthy << 4 if spaces[0] == ptoken && spaces[8] == ptoken && spaces[4] == " "
-  blockworthy << 8 if spaces[0] == ptoken && spaces[4] == ptoken && spaces[8] == " "
-  # SW to NE diagonal
-  blockworthy << 6 if spaces[2] == ptoken && spaces[4] == ptoken && spaces[6] == " "
-  blockworthy << 4 if spaces[2] == ptoken && spaces[6] == ptoken && spaces[4] == " "
-  blockworthy << 2 if spaces[4] == ptoken && spaces[6] == ptoken && spaces[2] == " "
-  # first column
-  blockworthy << 0 if spaces[3] == ptoken && spaces[6] == ptoken && spaces[0] == " "
-  blockworthy << 3 if spaces[0] == ptoken && spaces[6] == ptoken && spaces[3] == " "
-  blockworthy << 6 if spaces[0] == ptoken && spaces[3] == ptoken && spaces[6] == " "
-  # second column
-  blockworthy << 1 if spaces[4] == ptoken && spaces[7] == ptoken && spaces[1] == " "
-  blockworthy << 4 if spaces[1] == ptoken && spaces[7] == ptoken && spaces[4] == " "
-  blockworthy << 7 if spaces[1] == ptoken && spaces[4] == ptoken && spaces[7] == " "
-  # third column
-  blockworthy << 2 if spaces[5] == ptoken && spaces[8] == ptoken && spaces[2] == " "
-  blockworthy << 5 if spaces[2] == ptoken && spaces[8] == ptoken && spaces[5] == " "
-  blockworthy << 8 if spaces[2] == ptoken && spaces[5] == ptoken && spaces[8] == " "
-  # choose randomly from among available blocks
-  return blockworthy.sample if ! blockworthy.empty?
-  # if no conditions are met, return false
-  false
-end
-
-# count up number of two-in-a-rows; return it
-def does_a_fork_now_exist(ctoken, spaces)
-  two_in_a_row = 0
-  # first row
-  two_in_a_row += 1  if spaces[0] == ctoken && spaces[1] == ctoken && spaces[2] == " "
-  two_in_a_row += 1  if spaces[0] == ctoken && spaces[2] == ctoken && spaces[1] == " "
-  two_in_a_row += 1  if spaces[1] == ctoken && spaces[2] == ctoken && spaces[0] == " "
-  # second row
-  two_in_a_row += 1  if spaces[3] == ctoken && spaces[4] == ctoken && spaces[5] == " "
-  two_in_a_row += 1  if spaces[3] == ctoken && spaces[5] == ctoken && spaces[4] == " "
-  two_in_a_row += 1  if spaces[4] == ctoken && spaces[5] == ctoken && spaces[3] == " "
-  # third row
-  two_in_a_row += 1  if spaces[6] == ctoken && spaces[7] == ctoken && spaces[8] == " "
-  two_in_a_row += 1  if spaces[6] == ctoken && spaces[8] == ctoken && spaces[7] == " "
-  two_in_a_row += 1  if spaces[7] == ctoken && spaces[8] == ctoken && spaces[6] == " "
-  # NW to SE diagonal
-  two_in_a_row += 1  if spaces[4] == ctoken && spaces[8] == ctoken && spaces[0] == " "
-  two_in_a_row += 1  if spaces[0] == ctoken && spaces[8] == ctoken && spaces[4] == " "
-  two_in_a_row += 1  if spaces[0] == ctoken && spaces[4] == ctoken && spaces[8] == " "
-  # SW to NE diagonal
-  two_in_a_row += 1  if spaces[2] == ctoken && spaces[4] == ctoken && spaces[6] == " "
-  two_in_a_row += 1  if spaces[2] == ctoken && spaces[6] == ctoken && spaces[4] == " "
-  two_in_a_row += 1  if spaces[4] == ctoken && spaces[6] == ctoken && spaces[2] == " "
-  # first column
-  two_in_a_row += 1  if spaces[3] == ctoken && spaces[6] == ctoken && spaces[0] == " "
-  two_in_a_row += 1  if spaces[0] == ctoken && spaces[6] == ctoken && spaces[3] == " "
-  two_in_a_row += 1  if spaces[0] == ctoken && spaces[3] == ctoken && spaces[6] == " "
-  # second column
-  two_in_a_row += 1  if spaces[4] == ctoken && spaces[7] == ctoken && spaces[1] == " "
-  two_in_a_row += 1  if spaces[1] == ctoken && spaces[7] == ctoken && spaces[4] == " "
-  two_in_a_row += 1  if spaces[1] == ctoken && spaces[4] == ctoken && spaces[7] == " "
-  # third column
-  two_in_a_row += 1  if spaces[5] == ctoken && spaces[8] == ctoken && spaces[2] == " "
-  two_in_a_row += 1  if spaces[2] == ctoken && spaces[8] == ctoken && spaces[5] == " "
-  two_in_a_row += 1  if spaces[2] == ctoken && spaces[5] == ctoken && spaces[8] == " "
-
-  return two_in_a_row
+  board = create_board(spaces)
+  return spaces, board
 end
 
 # returns a list of spaces array indexes that == " "
@@ -163,7 +83,7 @@ end
 
 # Test each space: if it is filled in, then test
 # are_there_two_computer_tokens_in_a_row. If yes, move there.
-def discover_fork(ctoken, spaces)
+def discover_fork(ctoken, spaces, board)
   open_spaces = compile_open_spaces(spaces)
 
   # Cycle through open_spaces; temporarily add a token to spaces;
@@ -174,9 +94,9 @@ def discover_fork(ctoken, spaces)
     # assigns computer token to this empty space
     spaces[space] = ctoken
     # check if spaces now contains a fork!
-    fork_me = does_a_fork_now_exist(ctoken, spaces)
+    afork, length = are_there_two_computer_tokens_in_a_row(ctoken, spaces, board)
     spaces[space] = " "
-    avail << space if fork_me > 1 # add this space to array of fork-creating spaces
+    avail << space if length && length > 1 # add this space to array of fork-creating spaces
   end
   if ! avail.empty? # do this if there ARE available fork-creating spaces
     corners = avail.select {|x| [0, 2, 6, 8].include?(x)}
@@ -223,7 +143,7 @@ end
 # The big AI, borrowed from Wikipedia via Stack Overflow; test if a move is
 # generated by any of these tests; one should be by the end of the method.
 # The original AI shouldn't be able to be beaten.
-def computer_moves(winnable, ptoken, ctoken, spaces)
+def computer_moves(winnable, ptoken, ctoken, spaces, board)
   skip_rule = ""
   if winnable == 'y'
     skip_rule = [0, 1, 2, 3, 5].sample # randomly chooses a rule to "forget"
@@ -235,26 +155,26 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
 
   # Win: If you have two in a row, play the third to get three in a row.
   # puts "Trying 1"
-  move = are_there_two_computer_tokens_in_a_row(ctoken, spaces) unless skip_rule == 0
+  move, length = are_there_two_computer_tokens_in_a_row(ctoken, spaces, board) unless skip_rule == 0
   if move
-    spaces = add_move_to_spaces(move, ctoken, spaces)
-    return spaces
+    spaces, board = add_move_to_spaces(move, ctoken, spaces, board)
+    return spaces, board
   end
 
   # Block: If the opponent has two in a row, play the third to block them.
   # puts "Trying 2"
-  move = block_player_now_dammit(ptoken, spaces) unless skip_rule == 1
+  move, length = are_there_two_computer_tokens_in_a_row(ptoken, spaces, board) unless skip_rule == 1
   if move
-    spaces = add_move_to_spaces(move, ctoken, spaces)
-    return spaces
+    spaces, board = add_move_to_spaces(move, ctoken, spaces, board)
+    return spaces, board
   end
 
   # Fork: Create an opportunity where you can win in two ways.
   # puts "Trying 3"
-  move = discover_fork(ctoken, spaces) unless skip_rule == 2
+  move = discover_fork(ctoken, spaces, board) unless skip_rule == 2
   if move
-    spaces = add_move_to_spaces(move, ctoken, spaces)
-    return spaces
+    spaces, board = add_move_to_spaces(move, ctoken, spaces, board)
+    return spaces, board
   end
 
   # Block Opponent's Fork: If there is a configuration where the opponent
@@ -262,10 +182,10 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
   # It appears I can simply use discover_fork again, changing only ctoken
   # to ptoken!
   # puts "Trying 4"
-  move = discover_fork(ptoken, spaces) unless skip_rule == 3
+  move = discover_fork(ptoken, spaces, board) unless skip_rule == 3
   if move
-    spaces = add_move_to_spaces(move, ctoken, spaces)
-    return spaces
+    spaces, board = add_move_to_spaces(move, ctoken, spaces, board)
+    return spaces, board
   end
 
   # Center: Play the center.
@@ -273,40 +193,40 @@ def computer_moves(winnable, ptoken, ctoken, spaces)
   # Note, no "unless skip_rule == 4" here. This is because if it's the opening
   # move, and this rule is skipped, then the computer won't play anything.
   if spaces[4] == " " # i.e., if the center is open, and you've made it this far
-    spaces = add_move_to_spaces(4, ctoken, spaces)
-    return spaces
+    spaces, board = add_move_to_spaces(4, ctoken, spaces, board)
+    return spaces, board
   end
 
   # Opposite Corner: If the opponent is in the corner, play the opposite corner.
   # puts "Trying 6"
   if move
     move = try_opposite_corner(ptoken, spaces) unless skip_rule == 5
-    spaces = add_move_to_spaces(move, ctoken, spaces)
-    return spaces
+    spaces, board = add_move_to_spaces(move, ctoken, spaces, board)
+    return spaces, board
   end
 
   # Empty Corner: Play an empty corner.
   # puts "Trying 7"
   move = try_empty_corner(spaces)
   if move
-    spaces = add_move_to_spaces(move, ctoken, spaces)
-    return spaces
+    spaces, board = add_move_to_spaces(move, ctoken, spaces, board)
+    return spaces, board
   end
 
   # Empty Side: Play an empty side.
   # puts "Trying 8"
   move = play_empty_side(spaces)
   if move
-    spaces = add_move_to_spaces(move, ctoken, spaces)
-    return spaces
+    spaces, board = add_move_to_spaces(move, ctoken, spaces, board)
+    return spaces, board
   end
 
   # If move is still false, game is over!
 
-  return spaces
+  return spaces, board
 end
 
-def player_moves(ptoken, spaces)
+def player_moves(ptoken, spaces, board)
   puts "Your move."
   valid_answer = nil
   answer = ""
@@ -327,20 +247,16 @@ def player_moves(ptoken, spaces)
   end
   # Actually write player's move to board!
   spaces[answer - 1] = ptoken
-  return spaces
+  board = create_board(spaces)
+  return spaces, board
 end
 
 # is there three in a row yet?
-def three_in_a_row(token, spaces)
-  if (spaces[0] == token && spaces[1] == token && spaces [2] == token) ||
-    (spaces[3] == token && spaces[4] == token && spaces [5] == token) ||
-    (spaces[6] == token && spaces[7] == token && spaces [8] == token) ||
-    (spaces[0] == token && spaces[3] == token && spaces [6] == token) ||
-    (spaces[1] == token && spaces[4] == token && spaces [7] == token) ||
-    (spaces[2] == token && spaces[5] == token && spaces [8] == token) ||
-    (spaces[0] == token && spaces[4] == token && spaces [8] == token) ||
-    (spaces[6] == token && spaces[4] == token && spaces [2] == token)
-    return true
+def three_in_a_row(token, board)
+  board.each do |triad, thash|
+    if thash.values.all? { |value| value == token}
+      return true # returns true (won game) if seen once
+    end
   end
   return false # return false if not three in a row yet
 end
@@ -367,7 +283,10 @@ while game_on
   player_wins = nil # true if player wins; false if computer wins
   # Start game by creating spaces
   spaces = Array.new(9, " ")
-  
+  # converts spaces into handy hash of different configurations of spaces
+  # absolutely necessary for more elegant AI, e.g., to see if exactly one
+  # space in a triad is available & would result in a win.
+  board = create_board(spaces)
 
   # See who goes first and announce
   who_goes_first = (rand > 0.5) # outputs random "true" or "false"
@@ -383,26 +302,25 @@ while game_on
   while present_round_not_won
     # move, then toggle who moves
     if whose_move == true
-      spaces = computer_moves(winnable, ptoken, ctoken, spaces)
+      spaces, board = computer_moves(winnable, ptoken, ctoken, spaces, board)
     else
-      spaces = player_moves(ptoken, spaces)
+      spaces, board = player_moves(ptoken, spaces, board)
     end
-    whose_move = !whose_move
+    whose_move = !whose_move # toggles true/false to determine whose move it is
 
     # redraw board following move
     draw_board(spaces)
 
     # Determine if there's a winner
-    if three_in_a_row(ptoken, spaces) == true
+    if three_in_a_row(ptoken, board) == true
       puts "Player wins this game!"
       present_round_not_won = false
       player_wins = true
-    elsif three_in_a_row(ctoken, spaces) == true
+    elsif three_in_a_row(ctoken, board) == true
       puts "Computer wins this game!"
       present_round_not_won = false
       player_wins = false
     elsif ! spaces.include?(" ")
-      present_round_not_won = false
       puts "Drawn game!"
       present_round_not_won = false
       player_wins = nil
