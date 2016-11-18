@@ -5,19 +5,21 @@ computer_score = 0
 draw_games = 0
 
 def create_board(spaces)
-    board = {
-      row1: {0 => spaces[0], 1 => spaces[1], 2 => spaces[2]}, # hash of three row spaces
-      row2: {3 => spaces[3], 4 => spaces[4], 5 => spaces[5]},
-      row3: {6 => spaces[6], 7 => spaces[7], 8 => spaces[8]},
-      col1: {0 => spaces[0], 3 => spaces[3], 6 => spaces[6]}, # hash of three column spaces
-      col2: {1 => spaces[1], 4 => spaces[4], 7 => spaces[7]},
-      col3: {2 => spaces[2], 5 => spaces[5], 8 => spaces[8]},
-      diag1: {0 => spaces[0], 4 => spaces[4], 8 => spaces[8]}, # hash of nw-se diagonal spaces
-      diag2: {2 => spaces[2], 4 => spaces[4], 6 => spaces[6]}    }
+    board = [
+      {0 => spaces[0], 1 => spaces[1], 2 => spaces[2]}, # hash of three row spaces
+      {3 => spaces[3], 4 => spaces[4], 5 => spaces[5]},
+      {6 => spaces[6], 7 => spaces[7], 8 => spaces[8]},
+      {0 => spaces[0], 3 => spaces[3], 6 => spaces[6]}, # hash of three column spaces
+      {1 => spaces[1], 4 => spaces[4], 7 => spaces[7]},
+      {2 => spaces[2], 5 => spaces[5], 8 => spaces[8]},
+      {0 => spaces[0], 4 => spaces[4], 8 => spaces[8]}, # hash of nw-se diagonal spaces
+      {2 => spaces[2], 4 => spaces[4], 6 => spaces[6]}
+    ]
     return board
 end
 
 def draw_board(spaces)
+  # First determine if there's a winner; if so, mark the winning spaces
   puts " ┏━━━━━━━┳━━━━━━━┳━━━━━━━┓"
   puts " ┃       ┃       ┃       ┃"
   puts " ┃   #{spaces[0] == " " ? "1".red : spaces[0]}   ┃   #{spaces[1] == " " ? "2".red : spaces[1]}   ┃   #{spaces[2] == " " ? "3".red : spaces[2]}   ┃"
@@ -35,10 +37,10 @@ end
 
 def are_there_two_computer_tokens_in_a_row(ctoken, spaces, board)
   groovy = [] # array of winning moves
-  # Strategy: since there is already a hash of all triads, simply process
-  # the hash; for each triad, test if it contains two ctokens and one " ".
+  # Strategy: since there is already an array of all triads, simply process
+  # the array; for each triad (=thash), test if it contains two ctokens and one " ".
   # If so, return the # for that space.
-  board.each do |triad, thash|
+  board.each do |thash|
     ctokens_spotted = 0 # count the ctokens
     empty_spotted = false # look for an empty spot
     empty = nil # any empty space
@@ -251,9 +253,9 @@ def player_moves(ptoken, spaces, board)
   return spaces, board
 end
 
-# is there three in a row yet?
+# are there three in a row yet?
 def three_in_a_row(token, board)
-  board.each do |triad, thash|
+  board.each do |thash|
     if thash.values.all? { |value| value == token}
       return true # returns true (won game) if seen once
     end
