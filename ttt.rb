@@ -19,7 +19,6 @@ def create_board(spaces)
 end
 
 def draw_board(spaces)
-  # First determine if there's a winner; if so, mark the winning spaces
   puts " ┏━━━━━━━┳━━━━━━━┳━━━━━━━┓"
   puts " ┃       ┃       ┃       ┃"
   puts " ┃   #{spaces[0] == " " ? "1".red : spaces[0]}   ┃   #{spaces[1] == " " ? "2".red : spaces[1]}   ┃   #{spaces[2] == " " ? "3".red : spaces[2]}   ┃"
